@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block container %}
+<br><br><br>
+    <div class="container">
+        <div>
+            <form method="post">
+                {% csrf_token %}
+                {{name}}
+                <input type="submit" value="Add">
+            </form>
+        </div>
+         <div>
+             <table class="table">
+                 <tr>
+                     <th>Question</th>
+                     <th>Type</th>
+                     <th>Options</th>
+                 </tr>
+                  {% for i in data %}
+                 <tr>
+                     <th> {{i.question}}</th>
+                     <th>{{i.type}}</th>
+                     <th>{{i.options}}</th>
+                 </tr>
+                 {% endfor %}
+             </table>
+             <a href="testformmaker">Submit</a>
+        </div>
+  </div>
+{% endblock %}
