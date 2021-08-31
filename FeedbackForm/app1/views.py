@@ -5,7 +5,6 @@ from .forms import FormCreateForm, FormChoiceMaker
 from .models import TempModel
 from django.db import connection
 
-
 class Home(TemplateView):
     template_name = 'home.html'
 
@@ -43,11 +42,14 @@ def add(request):
     temper = ''
     html_temp = ''
     for i in data:
-        html_temp += f'<label> {i.question} </label> <input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}"> <br> '
+        html_temp += f'<label> {i.question} </label> <input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}"> <br>'
         temper += f'{i.question.replace(" ", "_")} {fields[i.type]},'
-    cursor.execute(
-        f"CREATE TABLE if not exists {request.session['name']} ({temper[:-1]})")
+    if temper:
+        cursor.execute(
+            f"CREATE TABLE if not exists {request.session['name']} ({temper[:-1]})")
+    else:
+        return HttpResponseRedirect('/formmaker')
     print(html_temp)
     TempModel.objects.all().delete()
-    #return render(request, "formtest.html", {"form": f"<form> {html_temp} </form>"})
-    return HttpResponse(f"<form> {html_temp} </form>")
+    return render(request, "formtest.html", {"test": "html_temp"})
+    # return HttpResponse(f"<form> {html_temp} </form>")
