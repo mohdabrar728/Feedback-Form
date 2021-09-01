@@ -38,7 +38,7 @@ def add(request):
     data = TempModel.objects.all()
     cursor = connection.cursor()
     fields = {"1": "varchar(255)", "2": "varchar(255)", "3": "varchar(255)", "4": "varchar(255)", "5": "varchar(255)"}
-    html_fields = {"1": "text"}
+    html_fields = {"1": "text","4":"radio"}
     temper = ''
     html_temp = ''
     for i in data:
@@ -49,7 +49,8 @@ def add(request):
             f"CREATE TABLE if not exists {request.session['name']} ({temper[:-1]})")
     else:
         return HttpResponseRedirect('/formmaker')
-    print(html_temp)
+    print(html_temp,"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     TempModel.objects.all().delete()
-    return render(request, "formtest.html", {"test": "html_temp"})
-    # return HttpResponse(f"<form> {html_temp} </form>")
+    return render(request, "test.html", {"test": html_temp})
+    #return HttpResponse(html_temp)
+    # return render(request, "formcreate.html")
