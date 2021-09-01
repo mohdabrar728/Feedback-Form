@@ -6,6 +6,9 @@ class FormCreateForm(forms.ModelForm):
     class Meta:
         model = FormCreateModel
         fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={"class": "form-control"})
+        }
 
 
 class FormChoiceMaker(forms.Form):
