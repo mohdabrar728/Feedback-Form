@@ -1,9 +1,14 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .forms import FormCreateForm, FormChoiceMaker
-from .models import TempModel
+from .forms import FormCreateForm, FormChoiceMaker, EmailAdderForm, DropdownForm
+from .models import TempModel, FormTokenModel, EmailTokenModel
 from django.db import connection
+from .tokens import account_activation_token
+from django.urls import reverse
+from django.core.mail import EmailMessage
+from django.contrib.sites.shortcuts import get_current_site
+
 
 count = 1
 
@@ -12,6 +17,8 @@ class Home(TemplateView):
     template_name = 'home.html'
 
     def get_context_data(self, **kwargs):
+        # FormTokenModel.objects.all().delete()
+        # EmailTokenModel.objects.all().delete()
         context = super().get_context_data()
         context['form'] = FormCreateForm
         return context
@@ -73,12 +80,85 @@ def add(request):
         temper += f'{i.question.replace(" ", "_")} {fields[i.type]},'
     if temper:
         cursor.execute(
-            f"CREATE TABLE if not exists {request.session['name']} ({temper[:-1]})")
+            f"CREATE TABLE if not exists {request.session['name'].replace(' ', '_')} ({temper[:-1]})")
     else:
         return HttpResponseRedirect('/formmaker')
     print(temper, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     TempModel.objects.all().delete()
     count = 1
-    return render(request, "test.html", {"test": html_temp})
+    request.session['code'] = html_temp
+    return HttpResponseRedirect('/formcheck')
     # return HttpResponse(html_temp)
     # return render(request, "formcreate.html")
+
+
+def formcheck(request):
+    data = EmailTokenModel.objects.all().filter(form_token=account_activation_token.make_token(request.session['name']))
+    return render(request, "test.html", {"test": request.session['code'], "form": EmailAdderForm, "data": data})
+
+
+def formtokenview(request):
+    if request.method == 'POST':
+        form_name = request.session['name']
+        form_token = account_activation_token.make_token(request.session['name'])
+        form_code = request.session['code']
+        request.session['token'] = form_token
+        data = FormTokenModel(form_name=form_name, form_token=form_token, form_code=form_code)
+        data.save()
+        return HttpResponseRedirect('/formpreview')
+
+
+def formpreview(request):
+    data = FormTokenModel.objects.all()
+    dropform = "<select name='select_form' id='id_select_form'>"
+    for i in data:
+        dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
+    dropform += "</select>"
+    if request.method == 'POST':
+        form_name = request.POST.get('select_form')
+        formdata = FormTokenModel.objects.get(form_name=form_name)
+        request.session['token'] = formdata.form_token
+        form = formdata.form_code
+        return render(request, "test1.html", {'dropform': dropform, "form": form})
+    return render(request, "test1.html", {'dropform': dropform})
+
+
+def showmail(request):
+    if request.method == 'POST':
+        send_mail_data = EmailTokenModel.objects.all().filter(form_token=request.session['token'])
+        for smd in send_mail_data:
+            # try:
+                uidb64 = smd.form_token
+                print("uiddb64", uidb64)
+                domain = get_current_site(request).domain
+                link = reverse(
+                    'feedbackform', kwargs={'uidb64': uidb64, 'token': smd.email_token}
+                )
+                mail_subject = 'Submit your Feedback.'
+                activate_url = 'http://' + domain + link
+                message = 'Hi ' + smd.email_id + 'Please use this link to submit your feedback\n' + activate_url
+                to_email = smd.email_id
+                email = EmailMessage(
+                    mail_subject, message, to=[to_email]
+                )
+                email.send(fail_silently=False)
+
+                data = 'Please confirm your email address to complete the registration your account will be activated'
+            # except Exception as error:
+            #     user.delete()
+            #     data = 'something went wrong unable to send a mail: '.format({error})
+
+    return render(request, "test2.html", {"email_form": EmailAdderForm,
+                                              'data': EmailTokenModel.objects.all().filter(
+                                                  form_token=request.session['token'])})
+
+
+def emailtokenview(request):
+    if request.method == 'POST':
+        data = EmailTokenModel(form_token=request.session['token'], email_id=request.POST.get('email'),
+                               email_token=account_activation_token.make_token(request.POST.get('email')))
+        data.save()
+    return HttpResponseRedirect('/showmail')
+
+def feedbackform(request,uidb64,token):
+    return render(request,"feedbackform.html")

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block container %}
+<div>
+ <form method="post" action="/formpreview">
+            {% csrf_token %}
+        {{dropform|safe}}
+      <input type="submit" value="preview">
+    </form>
+</div>
+{% if form %}
+<div class="row">
+    <div class="col">
+        <form action="showmail" method="post">
+              {% csrf_token %}
+            {{form|safe}}
+        <input type="submit" value="send">
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block container %}
+<div class="col">
+         <form method="post" action="/emailtokenview">
+                    {% csrf_token %}
+                        {{email_form}}
+                <input type="submit" value="add">
+        </form>
+        {% for i in data %}
+        {{i.email_id}}
+        {% endfor %}
+        <form action="showmail" method="post">
+              {% csrf_token %}
+        <input type="submit" value="send">
+        </form>
+    </div>
+{% endblock %}

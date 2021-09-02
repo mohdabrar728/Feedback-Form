@@ -3,7 +3,9 @@
 <br><br>
 <h1 align="center">{{request.session.name}}</h1><br><br>
 <br>
-<form>
+<form method="post" action="/formtokenview">
+        {% csrf_token %}
     {{test|safe}}
+    <input type="submit" value="submit">
 </form>
 {% endblock %}
