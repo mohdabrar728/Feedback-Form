@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
 {% block container %}
-{{test|safe}}
+<br><br>
+<h1 align="center">{{request.session.name}}</h1><br><br>
+<br>
+<form>
+    {{test|safe}}
+</form>
 {% endblock %}

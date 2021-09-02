@@ -4,7 +4,7 @@
     <div class="container">
         <h1 align="center">{{request.session.name}}</h1><br><br>
         <div>
-            <form method="post">
+            <form method="post" novalidate>
                 {% csrf_token %}
                 {{name}}
                 <input type="submit" value="Add">

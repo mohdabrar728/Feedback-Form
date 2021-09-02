@@ -44,21 +44,39 @@ def add(request):
     data = TempModel.objects.all()
     cursor = connection.cursor()
     fields = {"1": "varchar(255)", "2": "varchar(255)", "3": "varchar(255)", "4": "varchar(255)", "5": "varchar(255)"}
-    html_fields = {"1": "text", "2": "radio", "3": "checkbox", "4": "radio",  "5": "radio"}
+    html_fields = {"1": "text", "2": "radio", "3": "checkbox", "4": "radio", "5": "radio"}
     temper = ''
     html_temp = ''
     for i in data:
-        if html_fields[i.type] == "text":
+        if i.type == "1":
             html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <input class="form-control" type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}"> <br>'
-        elif html_fields[i.type] == "radio":
-            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <input class="form-control" type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}"> <br>'
+        elif i.type == "2":
+            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label><br>'
+            for opt in i.options.split(','):
+                html_temp += f'<input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}" value={opt} <label >{opt}</label><br>'
+            html_temp += "<br>"
+        elif i.type == "3":
+            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label><br>'
+            for opt in i.options.split(','):
+                html_temp += f'<input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}" value={opt} <label >{opt}</label><br>'
+            html_temp += "<br>"
+        elif i.type == "4":
+            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label><br>'
+            for opt in ['yes', 'no']:
+                html_temp += f'<input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}" value={opt}> <label >{opt}</label><br> '
+            html_temp += f'<input class="form-control" type="text" name="{i.question.replace(" ", "_")}"><br>'
+        elif i.type == "5":
+            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <br> <textarea ' \
+                         f'class="form-control" name="{i.question.replace(" ", "_")}" rows="4" cols="50"></textarea> ' \
+                         f'<br> '
+
         temper += f'{i.question.replace(" ", "_")} {fields[i.type]},'
     if temper:
         cursor.execute(
             f"CREATE TABLE if not exists {request.session['name']} ({temper[:-1]})")
     else:
         return HttpResponseRedirect('/formmaker')
-    print(html_temp, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print(temper, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     TempModel.objects.all().delete()
     count = 1
     return render(request, "test.html", {"test": html_temp})

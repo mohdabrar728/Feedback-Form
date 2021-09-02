@@ -21,3 +21,4 @@ class FormChoiceMaker(forms.Form):
         ("5", "Text Area"),
     )
     type = forms.ChoiceField(choices=CHOICES)
+    options = forms.CharField(max_length=255)
