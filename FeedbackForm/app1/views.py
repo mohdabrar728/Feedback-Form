@@ -9,7 +9,6 @@ from django.urls import reverse
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 
-
 count = 1
 
 
@@ -46,10 +45,12 @@ class FormMake(TemplateView):
         return HttpResponseRedirect("/formmaker")
 
 
+cursor = connection.cursor()
+
+
 def add(request):
     global count
     data = TempModel.objects.all()
-    cursor = connection.cursor()
     fields = {"1": "varchar(255)", "2": "varchar(255)", "3": "varchar(255)", "4": "varchar(255)", "5": "varchar(255)"}
     html_fields = {"1": "text", "2": "radio", "3": "checkbox", "4": "radio", "5": "radio"}
     temper = ''
@@ -128,29 +129,29 @@ def showmail(request):
         send_mail_data = EmailTokenModel.objects.all().filter(form_token=request.session['token'])
         for smd in send_mail_data:
             # try:
-                uidb64 = smd.form_token
-                print("uiddb64", uidb64)
-                domain = get_current_site(request).domain
-                link = reverse(
-                    'feedbackform', kwargs={'uidb64': uidb64, 'token': smd.email_token}
-                )
-                mail_subject = 'Submit your Feedback.'
-                activate_url = 'http://' + domain + link
-                message = 'Hi ' + smd.email_id + 'Please use this link to submit your feedback\n' + activate_url
-                to_email = smd.email_id
-                email = EmailMessage(
-                    mail_subject, message, to=[to_email]
-                )
-                email.send(fail_silently=False)
+            uidb64 = smd.form_token
+            print("uiddb64", uidb64)
+            domain = get_current_site(request).domain
+            link = reverse(
+                'feedbackform', kwargs={'uidb64': uidb64, 'token': smd.email_token}
+            )
+            mail_subject = 'Submit your Feedback.'
+            activate_url = 'http://' + domain + link
+            message = 'Hi ' + smd.email_id + 'Please use this link to submit your feedback\n' + activate_url
+            to_email = smd.email_id
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send(fail_silently=False)
 
-                data = 'Please confirm your email address to complete the registration your account will be activated'
-            # except Exception as error:
-            #     user.delete()
-            #     data = 'something went wrong unable to send a mail: '.format({error})
+            data = 'Please confirm your email address to complete the registration your account will be activated'
+        # except Exception as error:
+        #     user.delete()
+        #     data = 'something went wrong unable to send a mail: '.format({error})
 
     return render(request, "test2.html", {"email_form": EmailAdderForm,
-                                              'data': EmailTokenModel.objects.all().filter(
-                                                  form_token=request.session['token'])})
+                                          'data': EmailTokenModel.objects.all().filter(
+                                              form_token=request.session['token'])})
 
 
 def emailtokenview(request):
@@ -160,5 +161,21 @@ def emailtokenview(request):
         data.save()
     return HttpResponseRedirect('/showmail')
 
-def feedbackform(request,uidb64,token):
-    return render(request,"feedbackform.html")
+
+def feedbackform(request, uidb64, token):
+    formdata = FormTokenModel.objects.get(form_token=uidb64)
+    table_name = formdata.form_name
+    if request.method == 'POST':
+        dicter = dict(request.POST)
+        list_value = []
+        for i in dicter.keys():
+            convert_string = ",".join(dicter[i])
+            list_value.append(convert_string)
+        tuple_value = tuple(list_value[1:])
+        tuple_col = tuple(list(dicter.keys())[1:])
+        print(tuple_col)
+        print(tuple_value)
+        print(f"INSERT INTO feedback_form.{table_name.replace(' ','_')} {tuple_col} VALUES {tuple_value};")
+        cursor.execute(
+            f"INSERT INTO {table_name.replace(' ','_')} VALUES {tuple_value};")
+    return render(request, "feedbackform.html", {'form': formdata.form_code})
