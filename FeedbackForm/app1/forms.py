@@ -26,11 +26,3 @@ class FormChoiceMaker(forms.Form):
 
 class EmailAdderForm(forms.Form):
     email = forms.EmailField(max_length=100)
-
-
-class DropdownForm(forms.Form):
-    data = FormTokenModel.objects.all()
-    lister = []
-    for i in data:
-        lister.append((i.form_name, i.form_name))
-    select_form = forms.CharField(widget=forms.Select(choices=lister))

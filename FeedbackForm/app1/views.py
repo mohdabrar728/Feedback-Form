@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .forms import FormCreateForm, FormChoiceMaker, EmailAdderForm, DropdownForm
+from .forms import FormCreateForm, FormChoiceMaker, EmailAdderForm
 from .models import TempModel, FormTokenModel, EmailTokenModel
 from django.db import connection
 from .tokens import account_activation_token
