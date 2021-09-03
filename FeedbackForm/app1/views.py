@@ -77,11 +77,12 @@ def add(request):
             html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <br> <textarea ' \
                          f'class="form-control" name="{i.question.replace(" ", "_")}" rows="4" cols="50"></textarea> ' \
                          f'<br> '
-
         temper += f'{i.question.replace(" ", "_")} {fields[i.type]},'
+        print(temper, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     if temper:
         cursor.execute(
-            f"CREATE TABLE if not exists {request.session['name'].replace(' ', '_')} ({temper[:-1]})")
+            f"CREATE TABLE if not exists {request.session['name'].replace(' ', '_')} ({'email_token varchar(255),' + temper[:-1]}, PRIMARY KEY (email_token))")
+
     else:
         return HttpResponseRedirect('/formmaker')
     print(temper, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
@@ -171,11 +172,15 @@ def feedbackform(request, uidb64, token):
         for i in dicter.keys():
             convert_string = ",".join(dicter[i])
             list_value.append(convert_string)
-        tuple_value = tuple(list_value[1:])
-        tuple_col = tuple(list(dicter.keys())[1:])
+        tuple_value = (token,) + tuple(list_value[1:])
+        tuple_col = (token,) + tuple(list(dicter.keys())[1:])
         print(tuple_col)
         print(tuple_value)
-        print(f"INSERT INTO feedback_form.{table_name.replace(' ','_')} {tuple_col} VALUES {tuple_value};")
-        cursor.execute(
-            f"INSERT INTO {table_name.replace(' ','_')} VALUES {tuple_value};")
+        print(
+            f"INSERT INTO feedback_form.{table_name.replace(' ', '_')} {('email_token',) + tuple_col} VALUES {tuple_value};")
+        try:
+            cursor.execute(
+                f"INSERT INTO {table_name.replace(' ', '_')} VALUES {tuple_value};")
+        except:
+            return HttpResponse('Already Submitted')
     return render(request, "feedbackform.html", {'form': formdata.form_code})
