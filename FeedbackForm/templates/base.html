@@ -11,24 +11,9 @@
     <title>Hello, world!</title>
   </head>
   <body>
- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Feedback Form Creator</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link active" href="/">Home</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="row spacer"></div>
-        <div class="row offset-2">
-            <div class="col-12">
+    <div class="container w-100 p-3 h-200 d-inline-block alert alert-success" style="margin:80px;">
+        <div class="row">
+            <div class="col">
                 {% block container %}
                 {% endblock %}
             </div>

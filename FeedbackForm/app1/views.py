@@ -8,8 +8,30 @@ from .tokens import account_activation_token
 from django.urls import reverse
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+
 
 count = 1
+
+def mylogin(request):
+    if not request.user.is_authenticated:
+        if request.method == "POST":
+            fm = AuthenticationForm(request=request, data=request.POST)
+            if fm.is_valid():
+                uname = fm.cleaned_data['username']
+                upass = fm.cleaned_data['password']
+                user = authenticate(username=uname, password=upass)
+                if user is not None:
+                    login(request, user)
+                    messages.success(request, 'Logged in successfully !!')
+                    return HttpResponseRedirect('/home')
+        else:
+            fm = AuthenticationForm()
+        return render(request, 'login.html', {'form': fm})
+    else:
+        return HttpResponseRedirect('/home')
 
 
 class Home(TemplateView):
@@ -112,7 +134,7 @@ def formtokenview(request):
 
 def formpreview(request):
     data = FormTokenModel.objects.all()
-    dropform = "<select name='select_form' id='id_select_form'>"
+    dropform = "<select name='select_form' id='id_select_form' class='form-control'>"
     for i in data:
         dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
     dropform += "</select>"
