@@ -5,11 +5,12 @@
         <div class="col">
             <img src="{% static 'image/Title.svg' %}">
         </div>
-    <div class="col alert alert-success" style="padding-top:250px;padding-bottom:200px;padding-left:50px;padding-right:50px;">
+    <div class="col alert alert-success" style="padding-top:200px;padding-bottom:200px;padding-left:50px;padding-right:50px;">
         <form method="post">
             {% csrf_token %}
             <h4><b>Form Title:</b></h4>
             {{form.title}}
+            <p>If already exists <a href="/formpreview">click here</a> </p>
             <br>
             <center>
                 <input type="submit" value="submit" class="btn btn-success">

@@ -14,6 +14,9 @@ from django.contrib import messages
 
 
 count = 1
+def mylogout(request):
+  logout(request)
+  return HttpResponseRedirect('/')
 
 def mylogin(request):
     if not request.user.is_authenticated:
@@ -140,7 +143,10 @@ def formpreview(request):
     dropform += "</select>"
     if request.method == 'POST':
         form_name = request.POST.get('select_form')
-        formdata = FormTokenModel.objects.get(form_name=form_name)
+        try:
+            formdata = FormTokenModel.objects.get(form_name=form_name)
+        except:
+            return HttpResponseRedirect('/formpreview')
         request.session['token'] = formdata.form_token
         form = formdata.form_code
         return render(request, "test1.html", {'dropform': dropform, "form": form})
