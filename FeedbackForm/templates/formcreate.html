@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block container %}
-<br><br>
-    <div class="container" style="padding-top:50px;padding-bottom:250px;padding-left:50px;padding-right:50px;">
+    <div class="row" style="padding-top:50px;padding-bottom:250px;padding-left:50px;padding-right:50px;">
+        <div class="col-sm-4 col-md-4">
+        <img src="{% static 'image/Questions.svg' %}" width="350px" height="300">
+        </div>
+    <div class="col-sm-6 offset-sm-2 col-md-8 offset-md-0 alert alert-success">
         <h1 align="center">{{request.session.name}}</h1><br><br>
                   <center>
         <div>
@@ -23,7 +27,7 @@
                      <th>Options</th>
                  </tr>
                   {% for i in data %}
-                 <tr class="table-light">
+                 <tr>
                      <td>{{i.s_no}}</td>
                      <td> {{i.question}}</td>
                      <td>{{i.type}}</td>
@@ -31,9 +35,9 @@
                  </tr>
                  {% endfor %}
              </table>
-             <a href="testformmaker">Submit</a>
+             <a href="testformmaker" class="btn btn-success">Submit</a>
         </div>
-</center>
+        </center>
+    </div>
   </div>
-
 {% endblock %}

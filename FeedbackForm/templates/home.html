@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
+{%load static %}
 {% block container %}
     <div class="row">
-    <div class="col" style="padding-top:250px;padding-bottom:250px;padding-left:50px;padding-right:50px;">
+        <div class="col">
+            <img src="{% static 'image/Title.svg' %}">
+        </div>
+    <div class="col alert alert-success" style="padding-top:250px;padding-bottom:200px;padding-left:50px;padding-right:50px;">
         <form method="post">
             {% csrf_token %}
-            {{form.as_p}}
+            <h4><b>Form Title:</b></h4>
+            {{form.title}}
+            <br>
             <center>
                 <input type="submit" value="submit" class="btn btn-success">
             </center>
