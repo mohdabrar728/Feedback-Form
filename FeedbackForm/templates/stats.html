@@ -1,9 +1,90 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block container %}
-<div class="d-flex bd-highlight">
-    <div class="p-2 flex-fill bd-highlight">Flex item with a lot of content</div>
-    <div class="p-2 flex-fill bd-highlight">Flex item</div>
-    <div class="p-2 flex-fill bd-highlight">Flex item</div>
-    <div class="p-2 flex-fill bd-highlight">Flex item</div>
+<div>
+     <form method="post" action="/stats">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+          {{dropform|safe}}
+            <div class="input-group-append">
+            <input type="submit" value="show stat's" class="btn btn-secondary">
+          </div>
+        </div>
+     </form>
 </div>
+{% if total %}
+<div class="d-flex bd-highlight">
+    <div class="p-2 flex-fill bd-highlight">
+        <div class="card">
+          <div class="card-body">
+              <div class="row">
+                  <div class="col">
+                      <img src="{% static 'image/Total.svg' %}" width="100" height="100"><br>
+                      <h5 align="center">Total</h5>
+                  </div>
+                  <div class="col">
+                      <br>
+                      <h1 style="font-size:52px">{{total}}</h1>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="p-2 flex-fill bd-highlight">
+         <div class="card">
+          <div class="card-body">
+              <div class="row">
+                  <div class="col">
+                      <img src="{% static 'image/Submmited.svg' %}" width="100" height="100" ><br>
+                      <h5 align="center">Submitted</h5>
+                  </div>
+                  <div class="col">
+                      <br>
+                      <h1 style="font-size:52px">{{submitted}}</h1>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="p-2 flex-fill bd-highlight">
+         <div class="card">
+          <div class="card-body">
+              <div class="row">
+                  <div class="col">
+                      <img src="{% static 'image/pending.svg' %}" width="100" height="100"><br>
+                      <h5 align="center">Pending</h5>
+                  </div>
+                  <div class="col"><br>
+                      <h1 style="font-size:52px">{{pending}}</h1>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="p-2 flex-fill bd-highlight">
+         <div class="card">
+          <div class="card-body">
+              <div class="row">
+                  <div class="col">
+                      <img src="{% static 'image/average.svg' %}" width="100" height="100"  ><br>
+                      <h5 align="center">Average</h5>
+                  </div>
+                  <div class="col"><br>
+                      <h1 style="font-size:52px">{{average}}%</h1>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+</div>
+<div>
+    {{data}}
+</div>
+{% endif %}
 {% endblock %}

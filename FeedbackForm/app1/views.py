@@ -217,4 +217,24 @@ def feedbackform(request, uidb64, token):
 
 
 def stats(request):
-    return render(request, "stats.html")
+    data = FormTokenModel.objects.all()
+    dropform = "<select name='select_form' id='id_select_form' class='form-control'>"
+    for i in data:
+        dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
+    dropform += "</select>"
+    if request.method == "POST":
+        name = request.POST.get('select_form')
+        token_of_form = FormTokenModel.objects.get(form_name=name).form_token
+        total = len(EmailTokenModel.objects.all().filter(form_token=token_of_form))
+        submitted = cursor.execute(f"SELECT COUNT(email_token) FROM {name.replace(' ', '_')}")
+        pending = abs(total - submitted)
+        try:
+            average = (submitted / total) * 100
+        except:
+            average = 0
+        data = cursor.execute(f"SELECT * FROM {name.replace(' ', '_')}")
+        print(data)
+        return render(request, "stats.html",
+                      {'dropform': dropform, 'total': total, 'submitted': submitted, 'pending': pending,
+                       'average': round(average), 'data': data})
+    return render(request, "stats.html", {'dropform': dropform})
