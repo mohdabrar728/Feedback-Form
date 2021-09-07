@@ -12,11 +12,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
-
 count = 1
+
+
 def mylogout(request):
-  logout(request)
-  return HttpResponseRedirect('/')
+    logout(request)
+    return HttpResponseRedirect('/')
+
 
 def mylogin(request):
     if not request.user.is_authenticated:
@@ -212,3 +214,7 @@ def feedbackform(request, uidb64, token):
         except:
             return HttpResponse('Already Submitted')
     return render(request, "feedbackform.html", {'form': formdata.form_code})
+
+
+def stats(request):
+    return render(request, "stats.html")
