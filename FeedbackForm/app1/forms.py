@@ -20,8 +20,9 @@ class FormChoiceMaker(forms.Form):
         ("4", "Boolean Field"),
         ("5", "Text Area"),
     )
-    type = forms.ChoiceField(choices=CHOICES,widget=forms.Select(attrs={'onchange': "changetextbox();", 'id': "mfi_4_a_i"}))
-    options = forms.CharField(max_length=255,widget=forms.TextInput(attrs={'disabled': 'true'}))
+    type = forms.ChoiceField(choices=CHOICES,
+                             widget=forms.Select(attrs={'onchange': "changetextbox();", 'id': "mfi_4_a_i"}))
+    options = forms.CharField(max_length=255, widget=forms.TextInput(attrs={'disabled': 'true'}))
 
 
 class EmailAdderForm(forms.Form):

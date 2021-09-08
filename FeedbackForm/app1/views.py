@@ -110,13 +110,13 @@ def add(request):
         temper += f'{i.question.replace(" ", "_")} {fields[i.type]},'
         print(temper, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     if temper:
-        cursor.execute(
-            f"CREATE TABLE if not exists {request.session['name'].replace(' ', '_')} ({'email_token varchar(255),' + temper[:-1]}, PRIMARY KEY (email_token))")
+        request.session[
+            'temper'] = f"CREATE TABLE if not exists {request.session['name'].replace(' ', '_')} ({'email_token varchar(255),' + temper[:-1]}, PRIMARY KEY (email_token))"
 
     else:
         return HttpResponseRedirect('/formmaker')
     print(temper, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-    TempModel.objects.all().delete()
+    # TempModel.objects.all().delete()
     count = 1
     request.session['code'] = html_temp
     return HttpResponseRedirect('/formcheck')
@@ -126,7 +126,8 @@ def add(request):
 
 def formcheck(request):
     data = EmailTokenModel.objects.all().filter(form_token=account_activation_token.make_token(request.session['name']))
-    return render(request, "test.html", {"test": request.session['code'], "form": EmailAdderForm, "data": data, 'home':'btn-dark'})
+    return render(request, "test.html",
+                  {"test": request.session['code'], "form": EmailAdderForm, "data": data, 'home': 'btn-dark'})
 
 
 def formtokenview(request):
@@ -135,8 +136,10 @@ def formtokenview(request):
         form_token = account_activation_token.make_token(request.session['name'])
         form_code = request.session['code']
         request.session['token'] = form_token
+        cursor.execute( request.session['temper'])
         data = FormTokenModel(form_name=form_name, form_token=form_token, form_code=form_code)
         data.save()
+        TempModel.objects.all().delete()
         return HttpResponseRedirect('/formpreview')
 
 
@@ -185,7 +188,7 @@ def showmail(request):
 
     return render(request, "test2.html", {"email_form": EmailAdderForm,
                                           'data': EmailTokenModel.objects.all().filter(
-                                              form_token=request.session['token']),'home':'btn-dark'})
+                                              form_token=request.session['token']), 'home': 'btn-dark'})
 
 
 def emailtokenview(request):
