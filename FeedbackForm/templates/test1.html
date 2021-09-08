@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block container %}
-    <div class="row" style="padding-top:10px;padding-bottom:250px;padding-left:50px;padding-right:50px;">
-        <div class="col-sm-6 offset-sm-2 col-md-8 offset-md-0 alert alert-success">
+    <div class="container">
+        <br><br><br>
             <center>
                  <form method="post" action="/formpreview">
                         {% csrf_token %}
-
                     <div class="input-group mb-3">
                       {{dropform|safe}}
                         <div class="input-group-append">
@@ -25,10 +24,9 @@
             </center>
             </form>
             {% endif %}
+        <div align="right">
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <img src="{% static 'image/Preview.svg' %}" width="400px">
         </div>
-    <div class="col-sm-4 col-md-4">
-        <br><br>
-        <img src="{% static 'image/Preview.svg' %}" width="500px">
     </div>
-</div>
 {% endblock %}

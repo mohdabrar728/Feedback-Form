@@ -43,10 +43,12 @@ class Home(TemplateView):
     template_name = 'home.html'
 
     def get_context_data(self, **kwargs):
+        # TempModel.objects.all().delete()
         # FormTokenModel.objects.all().delete()
         # EmailTokenModel.objects.all().delete()
         context = super().get_context_data()
         context['form'] = FormCreateForm
+        context['home'] = 'btn-dark'
         return context
 
     def post(self, request):
@@ -61,6 +63,7 @@ class FormMake(TemplateView):
         context = super().get_context_data()
         context['name'] = FormChoiceMaker
         context['data'] = TempModel.objects.all()
+        context['home'] = "btn-dark"
         return context
 
     def post(self, request):
@@ -123,7 +126,7 @@ def add(request):
 
 def formcheck(request):
     data = EmailTokenModel.objects.all().filter(form_token=account_activation_token.make_token(request.session['name']))
-    return render(request, "test.html", {"test": request.session['code'], "form": EmailAdderForm, "data": data})
+    return render(request, "test.html", {"test": request.session['code'], "form": EmailAdderForm, "data": data, 'home':'btn-dark'})
 
 
 def formtokenview(request):
@@ -139,7 +142,7 @@ def formtokenview(request):
 
 def formpreview(request):
     data = FormTokenModel.objects.all()
-    dropform = "<select name='select_form' id='id_select_form' class='form-control'>"
+    dropform = "<select name='select_form' id='id_select_form' class='form-select'>"
     for i in data:
         dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
     dropform += "</select>"
@@ -151,8 +154,8 @@ def formpreview(request):
             return HttpResponseRedirect('/formpreview')
         request.session['token'] = formdata.form_token
         form = formdata.form_code
-        return render(request, "test1.html", {'dropform': dropform, "form": form})
-    return render(request, "test1.html", {'dropform': dropform})
+        return render(request, "test1.html", {'dropform': dropform, "form": form, "services": "btn-dark"})
+    return render(request, "test1.html", {'dropform': dropform, "services": "btn-dark"})
 
 
 def showmail(request):
@@ -182,7 +185,7 @@ def showmail(request):
 
     return render(request, "test2.html", {"email_form": EmailAdderForm,
                                           'data': EmailTokenModel.objects.all().filter(
-                                              form_token=request.session['token'])})
+                                              form_token=request.session['token']),'home':'btn-dark'})
 
 
 def emailtokenview(request):
@@ -242,5 +245,5 @@ def stats(request):
         print(data)
         return render(request, "stats.html",
                       {'dropform': dropform, 'total': total, 'submitted': submitted, 'pending': pending,
-                       'average': round(average), 'data': data, 'data1': field_data1})
-    return render(request, "stats.html", {'dropform': dropform})
+                       'average': round(average), 'data': data, 'data1': field_data1, 'stats': 'btn-dark'})
+    return render(request, "stats.html", {'dropform': dropform, 'stats': 'btn-dark'})
