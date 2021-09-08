@@ -83,8 +83,30 @@
         </div>
     </div>
 </div>
-<div>
-    {{data}}
+
+<div class="row">
+    <div class="col-8">
+        <div class="overflow-scroll">
+            <table class="table table-bordered">
+                <tr class="table-success">
+                    <th>S.No</th>
+                    {% for i in data1|slice:"1:" %}
+                    <th>{{i}}</th>
+                    {% endfor %}
+                </tr>
+            {% for i in data %}
+            <tr>
+                <td></td>
+                {% for j in i|slice:"1:" %}
+                <td>{{j}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+        </div>
+    </div>
+    <div class="col-6"></div>
 </div>
 {% endif %}
 {% endblock %}

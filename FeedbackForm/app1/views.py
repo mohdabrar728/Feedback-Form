@@ -232,9 +232,15 @@ def stats(request):
             average = (submitted / total) * 100
         except:
             average = 0
-        data = cursor.execute(f"SELECT * FROM {name.replace(' ', '_')}")
+        cursor.execute(f"SHOW COLUMNS FROM feedback_form.{name.replace(' ', '_')};")
+        data1 = cursor.fetchall()
+        field_data1 = []
+        for i in data1:
+            field_data1.append(i[0])
+        cursor.execute(f"SELECT * FROM feedback_form.{name.replace(' ', '_')}")
+        data = cursor.fetchall()
         print(data)
         return render(request, "stats.html",
                       {'dropform': dropform, 'total': total, 'submitted': submitted, 'pending': pending,
-                       'average': round(average), 'data': data})
+                       'average': round(average), 'data': data, 'data1': field_data1})
     return render(request, "stats.html", {'dropform': dropform})
