@@ -68,10 +68,12 @@ class FormMake(TemplateView):
 
     def post(self, request):
         global count
-        data = TempModel(s_no=count, question=self.request.POST.get('question'), type=self.request.POST.get('type'),
-                         options=self.request.POST.get('options'))
-        data.save()
-        count += 1
+        if "None" != self.request.POST.get('type'):
+            print(self.request.POST.get('type'))
+            data = TempModel(s_no=count, question=self.request.POST.get('question'), type=self.request.POST.get('type'),
+                             options=self.request.POST.get('options'))
+            data.save()
+            count += 1
         return HttpResponseRedirect("/formmaker")
 
 
@@ -136,7 +138,7 @@ def formtokenview(request):
         form_token = account_activation_token.make_token(request.session['name'])
         form_code = request.session['code']
         request.session['token'] = form_token
-        cursor.execute( request.session['temper'])
+        cursor.execute(request.session['temper'])
         data = FormTokenModel(form_name=form_name, form_token=form_token, form_code=form_code)
         data.save()
         TempModel.objects.all().delete()
@@ -145,7 +147,7 @@ def formtokenview(request):
 
 def formpreview(request):
     data = FormTokenModel.objects.all()
-    dropform = "<select name='select_form' id='id_select_form' class='form-select'>"
+    dropform = "<select name='select_form' id='id_select_form' class='form-select'><option value='None'>select an option</option>"
     for i in data:
         dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
     dropform += "</select>"
@@ -224,13 +226,16 @@ def feedbackform(request, uidb64, token):
 
 def stats(request):
     data = FormTokenModel.objects.all()
-    dropform = "<select name='select_form' id='id_select_form' class='form-control'>"
+    dropform = "<select name='select_form' id='id_select_form' class='form-control'><option value='None'>Select an option</option> "
     for i in data:
         dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
     dropform += "</select>"
     if request.method == "POST":
         name = request.POST.get('select_form')
-        token_of_form = FormTokenModel.objects.get(form_name=name).form_token
+        try:
+            token_of_form = FormTokenModel.objects.get(form_name=name).form_token
+        except:
+            return HttpResponseRedirect('/stats')
         total = len(EmailTokenModel.objects.all().filter(form_token=token_of_form))
         submitted = cursor.execute(f"SELECT COUNT(email_token) FROM {name.replace(' ', '_')}")
         pending = abs(total - submitted)

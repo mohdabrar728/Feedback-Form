@@ -14,6 +14,7 @@ class FormCreateForm(forms.ModelForm):
 class FormChoiceMaker(forms.Form):
     question = forms.CharField(max_length=255)
     CHOICES = (
+        ("None","Select an Option"),
         ("1", "Text Box"),
         ("2", "Radio"),
         ("3", "Check Box"),
