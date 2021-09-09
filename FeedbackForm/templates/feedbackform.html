@@ -12,36 +12,29 @@
 
     <title>Feedback Form</title>
   </head>
-  <body>
-    <nav class="navbar navbar-light" style="background-color:white;">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img src="{% static 'image/writing.svg' %}" width="100" height="100" class="d-inline-block align-text-top">
-          <img src="https://feedbackstudio.tv/wp-content/uploads/2020/11/feedback-logo.png" alt="" width="300" height="100" class="d-inline-block align-text-top">
-        </a>
-      </div>
-
-    </nav>
-
+  <body style="background-color:#0c0c0c;">
 <div class="container" style="padding-top:50px;padding-bottom:50px;padding-left:50px;padding-right:50px;">
-     <div class="row" >
-
-        <div class="col-sm-6 offset-sm-2 col-md-8 offset-md-0 alert alert-success">
-   <h1 align="center">{{request.session.name}}</h1><br><br>
-<br>
-<form method="post" action="">
-    {% csrf_token %}
-    {{form|safe}}
-    <center>
-        <input type="submit" value="submit" class="btn btn-success">
-    </center>
-</form>
-        </div>
-         <div class="col-sm-4 col-md-4">
-                <img src="{% static 'image/user_response.svg' %}" width="500px" height="500px" >
+     <h1 align="center" style="color:#bc9864">{{table_name}}</h1><br><br>
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6" style="color:white;">
+        <form method="post" action="">
+            {% csrf_token %}
+            {{form|safe}}
+            <center>
+                <input type="submit" value="submit" class="btn" style="background-color:#bc9864">
+            </center>
+        </form>
     </div>
-     </div>
+    <div class="col-3"></div>
 </div>
+<!--</form>-->
+<!--        </div>-->
+<!--         <div class="col-sm-4 col-md-4">-->
+<!--                <img src="{% static 'image/user_response.svg' %}" width="500px" height="500px" >-->
+<!--    </div>-->
+<!--     </div>-->
+
 
     <!-- Optional JavaScript; choose one of the two! -->
 

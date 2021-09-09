@@ -8,7 +8,11 @@
 <form method="post" action="/formtokenview">
         {% csrf_token %}
     {{test|safe}}
-    <center><input type="submit" value="submit" class="btn btn-success"></center>
+    <center>
+        <a href="formmaker" class="btn btn-warning">back</a>
+        <input type="submit" value="submit" class="btn btn-success">
+        <a href="cancel" class="btn btn-danger">cancel</a>
+    </center>
 </form>
 </div>
 {% endblock %}

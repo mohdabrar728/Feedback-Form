@@ -53,7 +53,7 @@ class Home(TemplateView):
 
     def post(self, request):
         request.session['name'] = self.request.POST.get('title')
-        return HttpResponseRedirect('/formmaker')
+        return HttpResponseRedirect('/fker')
 
 
 class FormMake(TemplateView):
@@ -219,9 +219,10 @@ def feedbackform(request, uidb64, token):
         try:
             cursor.execute(
                 f"INSERT INTO {table_name.replace(' ', '_')} VALUES {tuple_value};")
+            return render(request, "formsubmitted.html")
         except:
-            return HttpResponse('Already Submitted')
-    return render(request, "feedbackform.html", {'form': formdata.form_code})
+            return render(request, "alreadysubmitted.html")
+    return render(request, "feedbackform.html", {'form': formdata.form_code, 'table_name': table_name})
 
 
 def stats(request):
@@ -237,7 +238,7 @@ def stats(request):
         except:
             return HttpResponseRedirect('/stats')
         total = len(EmailTokenModel.objects.all().filter(form_token=token_of_form))
-        submitted = cursor.execute(f"SELECT COUNT(email_token) FROM {name.replace(' ', '_')}")
+        submitted = cursor.execute(f"SELECT * FROM {name.replace(' ', '_')}")
         pending = abs(total - submitted)
         try:
             average = (submitted / total) * 100
@@ -255,3 +256,47 @@ def stats(request):
                       {'dropform': dropform, 'total': total, 'submitted': submitted, 'pending': pending,
                        'average': round(average), 'data': data, 'data1': field_data1, 'stats': 'btn-dark'})
     return render(request, "stats.html", {'dropform': dropform, 'stats': 'btn-dark'})
+
+
+def formdata(request):
+    data = FormTokenModel.objects.all()
+    dropform = "<select name='select_form' id='id_select_form' class='form-control'><option value='None'>Select an option</option> "
+    for i in data:
+        dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
+    dropform += "</select>"
+    if request.method == "POST":
+        name = request.POST.get('select_form')
+        try:
+            token_of_form = FormTokenModel.objects.get(form_name=name).form_token
+        except:
+            return HttpResponseRedirect('/formdata')
+        cursor.execute(f"SHOW COLUMNS FROM feedback_form.{name.replace(' ', '_')};")
+        data1 = cursor.fetchall()
+        field_data1 = []
+        for i in data1:
+            field_data1.append(i[0])
+        cursor.execute(f"SELECT * FROM feedback_form.{name.replace(' ', '_')}")
+        data = cursor.fetchall()
+        mdata = []
+        count = 1
+        for i in data:
+            mdata.append((count,)+i[1:])
+            count += 1
+        print(mdata, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        return render(request, "formdata.html",
+                      {'dropform': dropform, 'data': mdata, 'data1': field_data1, 'formdata': 'btn-dark',
+                       'range': range(len(data))})
+    return render(request, "formdata.html", {'dropform': dropform, 'formdata': 'btn-dark'})
+
+
+def clear_tempdata(request):
+    global count
+    count = 1
+    TempModel.objects.all().delete()
+    return HttpResponseRedirect('/formmaker')
+
+def cancel(request):
+    global count
+    count = 1
+    TempModel.objects.all().delete()
+    return HttpResponseRedirect('/home')

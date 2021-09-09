@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block container %}
+<div class="container">
+    <br><br><br><br>
+     <form method="post" action="/formdata">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+          {{dropform|safe}}
+            <div class="input-group-append">
+            <input type="submit" value="show stat's" class="btn btn-secondary">
+          </div>
+        </div>
+     </form>
+</div>
+{% if data %}
+        <div class="overflow-scroll">
+            <table class="table table-bordered">
+                <tr class="table-success">
+                    <th>S.No</th>
+                    {% for i in data1|slice:"1:" %}
+                    <th>{{i}}</th>
+                    {% endfor %}
+                </tr>
+            {% for i in data %}
+            <tr>
+                {% for j in i %}
+                <td>{{j}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
+    <div class="col-6"></div>
+</div>
+{% endif %}
+{% endblock %}
