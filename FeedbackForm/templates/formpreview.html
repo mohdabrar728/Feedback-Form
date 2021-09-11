@@ -16,13 +16,11 @@
              </center>
         <br><br>
         {% if form %}
-            <form action="showmail" method="post">
-                  {% csrf_token %}
                 <fieldset disabled>
                     {{form|safe}}
                 </fieldset>
             <center>
-                <input type="submit" value="send" class="btn btn-success">
+                <a href="showmail" class="btn btn-success">send</a>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                   Clone Form
                 </button>

@@ -178,14 +178,14 @@ def showmail(request):
             )
             mail_subject = 'Submit your Feedback.'
             activate_url = 'http://' + domain + link
-            message = 'Hi ' + smd.email_id + 'Please use this link to submit your feedback\n' + activate_url
+            message = 'Hi ' + smd.email_id + ' Please use this link to submit your feedback\n' + activate_url
             to_email = smd.email_id
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
             email.send(fail_silently=False)
 
-            data = 'Please confirm your email address to complete the registration your account will be activated'
+        # data = 'Please confirm your email address to complete the registration your account will be activated'
         # except Exception as error:
         #     user.delete()
         #     data = 'something went wrong unable to send a mail: '.format({error})
