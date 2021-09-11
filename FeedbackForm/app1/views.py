@@ -83,7 +83,7 @@ cursor = connection.cursor()
 def add(request):
     global count
     data = TempModel.objects.all()
-    fields = {"1": "varchar(255)", "2": "varchar(255)", "3": "varchar(255)", "4": "varchar(255)", "5": "varchar(255)"}
+    fields = {"1": "varchar(255)", "2": "varchar(255)", "3": "varchar(255)", "4": "varchar(255)", "5": "varchar(255)","6": "varchar(255)"}
     html_fields = {"1": "text", "2": "radio", "3": "checkbox", "4": "radio", "5": "radio"}
     temper = ''
     html_temp = ''
@@ -104,13 +104,28 @@ def add(request):
             html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label><br>'
             for opt in ['yes', 'no']:
                 html_temp += f'<input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}" value={opt}> <label >{opt}</label><br> '
-            html_temp += f'<input class="form-control" type="text" name="{i.question.replace(" ", "_")}"><br>'
+            html_temp += f'<label class="form-label">Reason</label><br><input class="form-control" type="text" name="{i.question.replace(" ", "_")}"><br>'
         elif i.type == "5":
             html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <br> <textarea ' \
                          f'class="form-control" name="{i.question.replace(" ", "_")}" rows="4" cols="50"></textarea> ' \
                          f'<br> '
+        elif i.type == "6":
+            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <br>'
+            html_temp += f'''<div class="rate">
+    <input type="radio" id="{i.question.replace(" ", "_")}5" name="rate" value="5" />
+    <label for="star5" title="text">5 stars</label>
+    <input type="radio" id="{i.question.replace(" ", "_")}4" name="rate" value="4" />
+    <label for="star4" title="text">4 stars</label>
+    <input type="radio" id="{i.question.replace(" ", "_")}3" name="rate" value="3" />
+    <label for="star3" title="text">3 stars</label>
+    <input type="radio" id="{i.question.replace(" ", "_")}2"  name="rate" value="2" />
+    <label for="star2" title="text">2 stars</label>
+    <input type="radio" id="{i.question.replace(" ", "_")}1" name="{i.question.replace(" ", "_")}" value="1" />
+    <label for="star1" title="text">1 star</label>
+  </div><br><br>
+            '''
         temper += f'{i.question.replace(" ", "_")} {fields[i.type]},'
-        print(temper, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        # print(temper, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     if temper:
         request.session[
             'temper'] = f"CREATE TABLE if not exists {request.session['name'].replace(' ', '_')} ({'email_token varchar(255),' + temper[:-1]}, PRIMARY KEY (email_token))"

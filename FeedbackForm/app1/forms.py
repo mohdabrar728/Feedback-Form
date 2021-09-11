@@ -20,6 +20,7 @@ class FormChoiceMaker(forms.Form):
         ("3", "Check Box"),
         ("4", "Boolean Field"),
         ("5", "Text Area"),
+        ("6","Rating")
     )
     type = forms.ChoiceField(choices=CHOICES,
                              widget=forms.Select(attrs={'onchange': "changetextbox();", 'id': "mfi_4_a_i"}))
