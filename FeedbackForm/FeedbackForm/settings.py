@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'feedback_form',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'Root@123',
         'HOST': 'localhost',
         'PORT': '3306',
     }

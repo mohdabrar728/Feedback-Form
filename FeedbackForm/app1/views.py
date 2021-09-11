@@ -53,7 +53,7 @@ class Home(TemplateView):
 
     def post(self, request):
         request.session['name'] = self.request.POST.get('title')
-        return HttpResponseRedirect('/fker')
+        return HttpResponseRedirect('/formmaker')
 
 
 class FormMake(TemplateView):
@@ -128,7 +128,7 @@ def add(request):
 
 def formcheck(request):
     data = EmailTokenModel.objects.all().filter(form_token=account_activation_token.make_token(request.session['name']))
-    return render(request, "test.html",
+    return render(request, "formcheck.html",
                   {"test": request.session['code'], "form": EmailAdderForm, "data": data, 'home': 'btn-dark'})
 
 
@@ -153,14 +153,16 @@ def formpreview(request):
     dropform += "</select>"
     if request.method == 'POST':
         form_name = request.POST.get('select_form')
+        request.session['name_from_preview'] = form_name
         try:
             formdata = FormTokenModel.objects.get(form_name=form_name)
         except:
             return HttpResponseRedirect('/formpreview')
         request.session['token'] = formdata.form_token
         form = formdata.form_code
-        return render(request, "test1.html", {'dropform': dropform, "form": form, "services": "btn-dark"})
-    return render(request, "test1.html", {'dropform': dropform, "services": "btn-dark"})
+        request.session['code_form_preview'] = form
+        return render(request, "formpreview.html", {'dropform': dropform, "form": form, "services": "btn-dark"})
+    return render(request, "formpreview.html", {'dropform': dropform, "services": "btn-dark"})
 
 
 def showmail(request):
@@ -188,7 +190,7 @@ def showmail(request):
         #     user.delete()
         #     data = 'something went wrong unable to send a mail: '.format({error})
 
-    return render(request, "test2.html", {"email_form": EmailAdderForm,
+    return render(request, "showmail.html", {"email_form": EmailAdderForm,
                                           'data': EmailTokenModel.objects.all().filter(
                                               form_token=request.session['token']), 'home': 'btn-dark'})
 
@@ -300,3 +302,17 @@ def cancel(request):
     count = 1
     TempModel.objects.all().delete()
     return HttpResponseRedirect('/home')
+
+def formclone(request):
+    if request.method == 'POST':
+        new_name = request.POST.get('new_name')
+        original_table = request.session['name_from_preview'].replace(' ','_')
+        cursor.execute(f"CREATE TABLE {new_name.replace(' ','_')} SELECT * FROM {original_table};")
+        cursor.execute(f'DELETE FROM feedback_form.{new_name.replace(" ","_")}')
+        form_token = account_activation_token.make_token(new_name)
+        form_code = request.session['code_form_preview']
+        # request.session['token'] = form_token
+        # cursor.execute(request.session['temper'])
+        data = FormTokenModel(form_name=new_name, form_token=form_token, form_code=form_code)
+        data.save()
+    return HttpResponseRedirect('/formpreview')

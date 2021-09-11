@@ -10,6 +10,7 @@ urlpatterns = [
     path('formdata', views.formdata, name='formdata'),
     path("home", views.Home.as_view()),
     path("formmaker", views.FormMake.as_view()),
+    path("formclone", views.formclone),
     path("testformmaker", views.add),
     path("formtokenview", views.formtokenview),
     path("emailtokenview", views.emailtokenview),
