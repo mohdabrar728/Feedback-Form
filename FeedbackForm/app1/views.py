@@ -112,16 +112,16 @@ def add(request):
         elif i.type == "6":
             html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <br>'
             html_temp += f'''<div class="rate">
-    <input type="radio" id="{i.question.replace(" ", "_")}5" name="rate" value="5" />
-    <label for="star5" title="text">5 stars</label>
-    <input type="radio" id="{i.question.replace(" ", "_")}4" name="rate" value="4" />
-    <label for="star4" title="text">4 stars</label>
-    <input type="radio" id="{i.question.replace(" ", "_")}3" name="rate" value="3" />
-    <label for="star3" title="text">3 stars</label>
-    <input type="radio" id="{i.question.replace(" ", "_")}2"  name="rate" value="2" />
-    <label for="star2" title="text">2 stars</label>
-    <input type="radio" id="{i.question.replace(" ", "_")}1" name="{i.question.replace(" ", "_")}" value="1" />
-    <label for="star1" title="text">1 star</label>
+    <input type="radio" id="{i.question}5" name="{i.question}" value="5" />
+    <label for="{i.question}5" title="text">5 stars</label>
+    <input type="radio" id="{i.question}4" name="{i.question}" value="4" />
+    <label for="{i.question}4" title="text">4 stars</label>
+    <input type="radio" id="{i.question}3" name="{i.question}" value="3" />
+    <label for="{i.question}3" title="text">3 stars</label>
+    <input type="radio" id="{i.question}2" name="{i.question}" value="2" />
+    <label for="{i.question}2" title="text">2 stars</label>
+    <input type="radio" id="{i.question}1" name="{i.question}" value="1" />
+    <label for="{i.question}1" title="text">1 star</label>
   </div><br><br>
             '''
         temper += f'{i.question.replace(" ", "_")} {fields[i.type]},'
