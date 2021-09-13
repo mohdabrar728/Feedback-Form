@@ -39,7 +39,7 @@ def mylogin(request):
         return HttpResponseRedirect('/home')
 
 def del_fields(request,pk):
-    data = TempModel.objects.get(pk=pk).delete()
+    TempModel.objects.get(pk=pk).delete()
     return HttpResponseRedirect('/formmaker')
 
 class Home(TemplateView):
@@ -247,7 +247,7 @@ def feedbackform(request, uidb64, token):
 
 def stats(request):
     data = FormTokenModel.objects.all()
-    dropform = "<select name='select_form' id='id_select_form' class='form-control'><option value='None'>Select an option</option> "
+    dropform = "<select name='select_form' id='id_select_form' class='form-select   '><option value='None'>Select an option</option> "
     for i in data:
         dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
     dropform += "</select>"
@@ -280,7 +280,7 @@ def stats(request):
 
 def formdata(request):
     data = FormTokenModel.objects.all()
-    dropform = "<select name='select_form' id='id_select_form' class='form-control'><option value='None'>Select an option</option> "
+    dropform = "<select name='select_form' id='id_select_form' class='form-select'><option value='None'>Select an option</option> "
     for i in data:
         dropform += f"<option value='{i.form_name}'>{i.form_name}</option> "
     dropform += "</select>"
