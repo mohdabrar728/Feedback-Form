@@ -13,7 +13,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 
-
 def mylogout(request):
     logout(request)
     return HttpResponseRedirect('/')
@@ -37,9 +36,11 @@ def mylogin(request):
     else:
         return HttpResponseRedirect('/home')
 
-def del_fields(request,pk):
+
+def del_fields(request, pk):
     TempModel.objects.get(pk=pk).delete()
     return HttpResponseRedirect('/formmaker')
+
 
 class Home(TemplateView):
     template_name = 'home.html'
@@ -83,7 +84,8 @@ cursor = connection.cursor()
 
 def add(request):
     data = TempModel.objects.all()
-    fields = {"1": "varchar(255)", "2": "varchar(255)", "3": "varchar(255)", "4": "varchar(255)", "5": "varchar(255)","6": "varchar(255)"}
+    fields = {"1": "varchar(255)", "2": "varchar(255)", "3": "varchar(255)", "4": "varchar(255)", "5": "varchar(255)",
+              "6": "varchar(255)"}
     html_fields = {"1": "text", "2": "radio", "3": "checkbox", "4": "radio", "5": "radio"}
     temper = ''
     html_temp = ''
@@ -208,15 +210,20 @@ def showmail(request):
         #     data = 'something went wrong unable to send a mail: '.format({error})
 
     return render(request, "showmail.html", {"email_form": EmailAdderForm,
-                                          'data': EmailTokenModel.objects.all().filter(
-                                              form_token=request.session['token']), 'home': 'btn-dark'})
+                                             'data': EmailTokenModel.objects.all().filter(
+                                                 form_token=request.session['token']), 'home': 'btn-dark'})
 
 
 def emailtokenview(request):
     if request.method == 'POST':
-        data = EmailTokenModel(form_token=request.session['token'], email_id=request.POST.get('email'),
-                               email_token=account_activation_token.make_token(request.POST.get('email')))
-        data.save()
+        try:
+            EmailTokenModel.objects.filter(form_token=request.session['token']).get(
+                email_id=request.POST.get('email'))
+        except:
+            data = EmailTokenModel(form_token=request.session['token'], email_id=request.POST.get('email'),
+                                   email_token=account_activation_token.make_token(request.POST.get('email')))
+            data.save()
+
     return HttpResponseRedirect('/showmail')
 
 
@@ -299,7 +306,7 @@ def formdata(request):
         mdata = []
         count = 1
         for i in data:
-            mdata.append((count,)+i[1:])
+            mdata.append((count,) + i[1:])
             count += 1
         print(mdata, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         return render(request, "formdata.html",
@@ -314,18 +321,21 @@ def clear_tempdata(request):
     TempModel.objects.all().delete()
     return HttpResponseRedirect('/formmaker')
 
+
 def cancel(request):
     global count
     count = 1
     TempModel.objects.all().delete()
     return HttpResponseRedirect('/home')
 
+
 def formclone(request):
     if request.method == 'POST':
         new_name = request.POST.get('new_name')
-        original_table = request.session['name_from_preview'].replace(' ','_')
-        cursor.execute(f"CREATE TABLE {new_name.replace(' ','_')} SELECT * FROM {original_table};")
-        cursor.execute(f'DELETE FROM feedback_form.{new_name.replace(" ","_")}')
+        original_table = request.session['name_from_preview'].replace(' ', '_')
+        cursor.execute(f"CREATE TABLE {new_name.replace(' ', '_')} SELECT * FROM {original_table};")
+        cursor.execute(f'DELETE FROM feedback_form.{new_name.replace(" ", "_")}')
+        cursor.execute(f"ALTER TABLE {new_name.replace(' ', '_')} ADD PRIMARY KEY (email_token);")
         form_token = account_activation_token.make_token(new_name)
         form_code = request.session['code_form_preview']
         # request.session['token'] = form_token
