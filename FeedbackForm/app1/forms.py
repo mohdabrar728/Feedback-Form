@@ -1,15 +1,9 @@
 from django import forms
-from .models import FormCreateModel, FormTokenModel
+from .models import FormTokenModel
 
 
-class FormCreateForm(forms.ModelForm):
-    class Meta:
-        model = FormCreateModel
-        fields = '__all__'
-        widgets = {
-            'title': forms.TextInput(attrs={"class": "form-control"})
-        }
-
+class FormCreateForm(forms.Form):
+    title = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
 
 class FormChoiceMaker(forms.Form):
     question = forms.CharField(max_length=255)

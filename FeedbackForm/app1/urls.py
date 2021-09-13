@@ -17,5 +17,6 @@ urlpatterns = [
     path('formcheck', views.formcheck),
     path('formpreview', views.formpreview),
     path('showmail', views.showmail),
-    path('feedbackform/<slug:uidb64>/<slug:token>/', views.feedbackform, name="feedbackform")
+    path('feedbackform/<slug:uidb64>/<slug:token>/', views.feedbackform, name="feedbackform"),
+    path('del_fields/<int:pk>/', views.del_fields, name='del_fields')
 ]

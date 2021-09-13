@@ -38,6 +38,9 @@ def mylogin(request):
     else:
         return HttpResponseRedirect('/home')
 
+def del_fields(request,pk):
+    data = TempModel.objects.get(pk=pk).delete()
+    return HttpResponseRedirect('/formmaker')
 
 class Home(TemplateView):
     template_name = 'home.html'

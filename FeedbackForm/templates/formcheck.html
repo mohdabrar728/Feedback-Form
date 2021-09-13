@@ -7,7 +7,7 @@
 <div class="container">
 <form method="post" action="/formtokenview">
         {% csrf_token %}
-    <fieldset>
+    <fieldset disabled>
         {{test|safe}}
     </fieldset>
     <center>
