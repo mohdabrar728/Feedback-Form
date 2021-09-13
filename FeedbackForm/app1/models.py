@@ -5,7 +5,6 @@ from django.db import models
 
 
 class TempModel(models.Model):
-    s_no = models.IntegerField(null=True)
     question = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
     options = models.TextField(null=True)
