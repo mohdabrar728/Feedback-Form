@@ -12,7 +12,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
-count = 1
 
 
 def mylogout(request):
@@ -73,10 +72,9 @@ class FormMake(TemplateView):
         global count
         if "None" != self.request.POST.get('type'):
             print(self.request.POST.get('type'))
-            data = TempModel(s_no=count, question=self.request.POST.get('question'), type=self.request.POST.get('type'),
+            data = TempModel(question=self.request.POST.get('question'), type=self.request.POST.get('type'),
                              options=self.request.POST.get('options'))
             data.save()
-            count += 1
         return HttpResponseRedirect("/formmaker")
 
 
@@ -84,49 +82,50 @@ cursor = connection.cursor()
 
 
 def add(request):
-    global count
     data = TempModel.objects.all()
     fields = {"1": "varchar(255)", "2": "varchar(255)", "3": "varchar(255)", "4": "varchar(255)", "5": "varchar(255)","6": "varchar(255)"}
     html_fields = {"1": "text", "2": "radio", "3": "checkbox", "4": "radio", "5": "radio"}
     temper = ''
     html_temp = ''
+    count = 1
     for i in data:
         if i.type == "1":
-            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <input class="form-control" type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}"> <br>'
+            html_temp += f'<label class="form-label">{count}. {i.question} </label> <input class="form-control" type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}"> <br>'
         elif i.type == "2":
-            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label><br>'
+            html_temp += f'<label class="form-label">{count}. {i.question} </label><br>'
             for opt in i.options.split(','):
                 html_temp += f'<input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}" value={opt} <label >{opt}</label><br>'
             html_temp += "<br>"
         elif i.type == "3":
-            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label><br>'
+            html_temp += f'<label class="form-label">{count}. {i.question} </label><br>'
             for opt in i.options.split(','):
                 html_temp += f'<input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}" value={opt} <label >{opt}</label><br>'
             html_temp += "<br>"
         elif i.type == "4":
-            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label><br>'
+            html_temp += f'<label class="form-label">{count}. {i.question} </label><br>'
             for opt in ['yes', 'no']:
                 html_temp += f'<input type="{html_fields[i.type]}" name="{i.question.replace(" ", "_")}" value={opt}> <label >{opt}</label><br> '
             html_temp += f'<label class="form-label">Reason</label><br><input class="form-control" type="text" name="{i.question.replace(" ", "_")}"><br>'
         elif i.type == "5":
-            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <br> <textarea ' \
+            html_temp += f'<label class="form-label">{count}. {i.question} </label> <br> <textarea ' \
                          f'class="form-control" name="{i.question.replace(" ", "_")}" rows="4" cols="50"></textarea> ' \
                          f'<br> '
         elif i.type == "6":
-            html_temp += f'<label class="form-label">{i.s_no}. {i.question} </label> <br>'
+            html_temp += f'<label class="form-label">{count}. {i.question} </label> <br>'
             html_temp += f'''<div class="rate">
-    <input type="radio" id="{i.question}5" name="{i.question}" value="5" />
-    <label for="{i.question}5" title="text">5 stars</label>
-    <input type="radio" id="{i.question}4" name="{i.question}" value="4" />
-    <label for="{i.question}4" title="text">4 stars</label>
-    <input type="radio" id="{i.question}3" name="{i.question}" value="3" />
-    <label for="{i.question}3" title="text">3 stars</label>
-    <input type="radio" id="{i.question}2" name="{i.question}" value="2" />
-    <label for="{i.question}2" title="text">2 stars</label>
-    <input type="radio" id="{i.question}1" name="{i.question}" value="1" />
-    <label for="{i.question}1" title="text">1 star</label>
-  </div><br><br>
-            '''
+            <input type="radio" id="{i.question}5" name="{i.question}" value="5" />
+            <label for="{i.question}5" title="text">5 stars</label>
+            <input type="radio" id="{i.question}4" name="{i.question}" value="4" />
+            <label for="{i.question}4" title="text">4 stars</label>
+            <input type="radio" id="{i.question}3" name="{i.question}" value="3" />
+            <label for="{i.question}3" title="text">3 stars</label>
+            <input type="radio" id="{i.question}2" name="{i.question}" value="2" />
+            <label for="{i.question}2" title="text">2 stars</label>
+            <input type="radio" id="{i.question}1" name="{i.question}" value="1" />
+            <label for="{i.question}1" title="text">1 star</label>
+          </div><br><br>
+                    '''
+        count += 1
         temper += f'{i.question.replace(" ", "_")} {fields[i.type]},'
         # print(temper, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     if temper:

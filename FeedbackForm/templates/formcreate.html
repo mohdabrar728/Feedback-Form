@@ -30,7 +30,7 @@
                  </tr>
                   {% for i in data %}
                  <tr>
-                     <td>{{i.s_no}}</td>
+                     <td>{{forloop.counter}}</td>
                      <td> {{i.question}}</td>
                      <td>{{i.type}}</td>
                      <td>{{i.options}}</td>
