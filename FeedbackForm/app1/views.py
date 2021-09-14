@@ -12,6 +12,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
+cursor = connection.cursor()
+
 
 def mylogout(request):
     logout(request)
@@ -70,16 +72,13 @@ class FormMake(TemplateView):
         return context
 
     def post(self, request):
-        global count
+
         if "None" != self.request.POST.get('type'):
             print(self.request.POST.get('type'))
             data = TempModel(question=self.request.POST.get('question'), type=self.request.POST.get('type'),
                              options=self.request.POST.get('options'))
             data.save()
         return HttpResponseRedirect("/formmaker")
-
-
-cursor = connection.cursor()
 
 
 def add(request):
@@ -316,15 +315,11 @@ def formdata(request):
 
 
 def clear_tempdata(request):
-    global count
-    count = 1
     TempModel.objects.all().delete()
     return HttpResponseRedirect('/formmaker')
 
 
 def cancel(request):
-    global count
-    count = 1
     TempModel.objects.all().delete()
     return HttpResponseRedirect('/home')
 
