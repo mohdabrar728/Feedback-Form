@@ -157,7 +157,11 @@ def formtokenview(request):
         form_code = request.session['code']
         request.session['token'] = form_token
         cursor.execute(request.session['temper'])
-        data = FormTokenModel(form_name=form_name, form_token=form_token, form_code=form_code)
+        if request.POST.get('flexSwitchCheckChecked'):
+            unmask = True
+        else:
+            unmask = False
+        data = FormTokenModel(form_name=form_name, form_token=form_token, form_code=form_code, form_unmask=unmask)
         data.save()
         TempModel.objects.all().delete()
         return HttpResponseRedirect('/formpreview')
@@ -291,6 +295,7 @@ def formdata(request):
     dropform += "</select>"
     if request.method == "POST":
         name = request.POST.get('select_form')
+        request.session['name']=name
         try:
             token_of_form = FormTokenModel.objects.get(form_name=name).form_token
         except:

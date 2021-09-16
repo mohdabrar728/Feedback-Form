@@ -5,12 +5,20 @@
     <h1 align="center">{{request.session.name}}</h1>
 </div><br><br>
 <div class="container">
-<form method="post" action="/formtokenview">
-        {% csrf_token %}
+
+
     <fieldset disabled>
         {{test|safe}}
     </fieldset>
-    <center>
+
+        <form method="post" action="/formtokenview">
+        {% csrf_token %}
+    <div class="d-flex justify-content-end">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" name="flexSwitchCheckChecked">
+          <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
+        </div>
+    </div><center>
         <a href="formmaker" class="btn btn-warning">back</a>
         <input type="submit" value="submit" class="btn btn-success">
         <a href="cancel" class="btn btn-danger">cancel</a>

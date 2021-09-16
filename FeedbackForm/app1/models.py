@@ -14,6 +14,7 @@ class FormTokenModel(models.Model):
     form_name = models.CharField(max_length=100)
     form_token = models.CharField(max_length=100)
     form_code = models.TextField()
+    form_unmask = models.BooleanField()
 
 
 class EmailTokenModel(models.Model):

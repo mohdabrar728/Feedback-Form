@@ -15,7 +15,7 @@
 </div>
 {% if data %}
         <div class="overflow-scroll">
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="table">
                 <tr class="table-success">
                     <th>S.No</th>
                     {% for i in data1|slice:"1:" %}
@@ -31,6 +31,22 @@
             {% endfor %}
         </table>
         </div>
+<br>
+ <center>
+     <button onclick="ExportToExcel('xlsx')" class="btn btn-success">Export table to excel</button>
+ </center>
+
+            <script>
+
+                function ExportToExcel(type, fn, dl) {
+                    var elt = document.getElementById('table');
+                    var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+                    return dl ?
+                        XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                        XLSX.writeFile(wb, fn || ('{{request.session.name}}.' + (type || 'xlsx')));
+                }
+
+            </script>
     <div class="col-6"></div>
 </div>
 {% endif %}
