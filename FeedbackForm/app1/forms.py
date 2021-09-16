@@ -22,4 +22,4 @@ class FormChoiceMaker(forms.Form):
 
 
 class EmailAdderForm(forms.Form):
-    email = forms.EmailField(max_length=100, widget=forms.TextInput(attrs={"class": "form-control"}))
+    email = forms.CharField( widget=forms.Textarea(attrs={'cols':'100'}))

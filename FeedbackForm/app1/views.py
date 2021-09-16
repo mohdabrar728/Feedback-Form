@@ -11,6 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+import re
 
 cursor = connection.cursor()
 
@@ -222,13 +223,15 @@ def showmail(request):
 
 def emailtokenview(request):
     if request.method == 'POST':
-        try:
-            EmailTokenModel.objects.filter(form_token=request.session['token']).get(
-                email_id=request.POST.get('email'))
-        except:
-            data = EmailTokenModel(form_token=request.session['token'], email_id=request.POST.get('email'),
-                                   email_token=account_activation_token.make_token(request.POST.get('email')))
-            data.save()
+        emails = re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", request.POST.get('email'))
+        for i in emails:
+            try:
+                EmailTokenModel.objects.filter(form_token=request.session['token']).get(
+                    email_id=i)
+            except:
+                data = EmailTokenModel(form_token=request.session['token'], email_id=i,
+                                       email_token=account_activation_token.make_token(i))
+                data.save()
 
     return HttpResponseRedirect('/showmail')
 
