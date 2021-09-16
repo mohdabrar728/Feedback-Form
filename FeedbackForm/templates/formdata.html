@@ -18,6 +18,9 @@
             <table class="table table-bordered" id="table">
                 <tr class="table-success">
                     <th>S.No</th>
+                    {% if request.session.on %}
+                    <th>Mail ID's</th>
+                    {% endif %}
                     {% for i in data1|slice:"1:" %}
                     <th>{{i}}</th>
                     {% endfor %}

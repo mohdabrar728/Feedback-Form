@@ -200,7 +200,10 @@ def showmail(request):
             )
             mail_subject = 'Submit your Feedback.'
             activate_url = 'http://' + domain + link
-            message = 'Hi ' + smd.email_id + ' Please use this link to submit your feedback\n' + activate_url
+            if request.session['on']:
+                message = 'Hi ' + smd.email_id + ' Please use this link to submit your feedback and it is not confidential \n' + activate_url
+            else:
+                message = 'Hi ' + smd.email_id + ' Please use this link to submit your feedback it is confidential\n' + activate_url
             to_email = smd.email_id
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
@@ -309,10 +312,18 @@ def formdata(request):
         data = cursor.fetchall()
         mdata = []
         count = 1
-        for i in data:
-            mdata.append((count,) + i[1:])
-            count += 1
-        print(mdata, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        if FormTokenModel.objects.get(form_token=token_of_form).form_unmask:
+            request.session['on'] = True
+            for i in data:
+                email = EmailTokenModel.objects.get(email_token=i[0]).email_id
+                mdata.append((count,email) + i[1:])
+                count += 1
+        else:
+            request.session['on'] = False
+            for i in data:
+                mdata.append((count,) + i[1:])
+                count += 1
+        # print(mdata, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         return render(request, "formdata.html",
                       {'dropform': dropform, 'data': mdata, 'data1': field_data1, 'formdata': 'btn-dark',
                        'range': range(len(data))})
