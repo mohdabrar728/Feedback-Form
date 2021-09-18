@@ -159,8 +159,10 @@ def formtokenview(request):
         request.session['token'] = form_token
         cursor.execute(request.session['temper'])
         if request.POST.get('flexSwitchCheckChecked'):
+            print(request.POST.get('flexSwitchCheckChecked'),"+++++++++++++++++++++++++++++++++++++++++++++=========================")
             unmask = True
         else:
+            print(request.POST.get('flexSwitchCheckChecked'), "+++++++++++++++++++++++++++++++++++++++++++++=========================")
             unmask = False
         data = FormTokenModel(form_name=form_name, form_token=form_token, form_code=form_code, form_unmask=unmask)
         data.save()
