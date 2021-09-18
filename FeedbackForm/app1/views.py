@@ -73,7 +73,6 @@ class FormMake(TemplateView):
         return context
 
     def post(self, request):
-
         if "None" != self.request.POST.get('type'):
             print(self.request.POST.get('type'))
             data = TempModel(question=self.request.POST.get('question'), type=self.request.POST.get('type'),
@@ -159,10 +158,12 @@ def formtokenview(request):
         request.session['token'] = form_token
         cursor.execute(request.session['temper'])
         if request.POST.get('flexSwitchCheckChecked'):
-            print(request.POST.get('flexSwitchCheckChecked'),"+++++++++++++++++++++++++++++++++++++++++++++=========================")
+            print(request.POST.get('flexSwitchCheckChecked'),
+                  "+++++++++++++++++++++++++++++++++++++++++++++=========================")
             unmask = True
         else:
-            print(request.POST.get('flexSwitchCheckChecked'), "+++++++++++++++++++++++++++++++++++++++++++++=========================")
+            print(request.POST.get('flexSwitchCheckChecked'),
+                  "+++++++++++++++++++++++++++++++++++++++++++++=========================")
             unmask = False
         data = FormTokenModel(form_name=form_name, form_token=form_token, form_code=form_code, form_unmask=unmask)
         data.save()
@@ -203,7 +204,7 @@ def showmail(request):
             )
             mail_subject = 'Submit your Feedback.'
             activate_url = 'http://' + domain + link
-            if request.session['on']:
+            if not FormTokenModel.objects.get(form_token=request.session['token']).form_unmask:
                 message = 'Hi ' + smd.email_id + ' Please use this link to submit your feedback and it is not confidential \n' + activate_url
             else:
                 message = 'Hi ' + smd.email_id + ' Please use this link to submit your feedback it is confidential\n' + activate_url
@@ -220,7 +221,8 @@ def showmail(request):
 
     return render(request, "showmail.html", {"email_form": EmailAdderForm,
                                              'data': EmailTokenModel.objects.all().filter(
-                                                 form_token=request.session['token']), 'home': 'btn-dark'})
+                                                 form_token=request.session['token']), 'home': 'btn-dark',
+                                             'sent': 'Mail Sent Successfully'})
 
 
 def emailtokenview(request):
@@ -303,7 +305,7 @@ def formdata(request):
     dropform += "</select>"
     if request.method == "POST":
         name = request.POST.get('select_form')
-        request.session['name']=name
+        request.session['name'] = name
         try:
             token_of_form = FormTokenModel.objects.get(form_name=name).form_token
         except:
@@ -321,7 +323,7 @@ def formdata(request):
             request.session['on'] = True
             for i in data:
                 email = EmailTokenModel.objects.get(email_token=i[0]).email_id
-                mdata.append((count,email) + i[1:])
+                mdata.append((count, email) + i[1:])
                 count += 1
         else:
             request.session['on'] = False

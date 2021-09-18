@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block container %}
+<script>
+   function fonctionTest()
+      {
+          alert("mail sent successfully")
+       }
+</script>
     <div class="container" style="padding-top:50px;padding-bottom:250px;padding-left:50px;padding-right:50px;">
         <div class="row" >
             <div class="col-sm-4 col-md-4">
@@ -32,8 +38,9 @@
         <form action="showmail" method="post">
               {% csrf_token %}
         <center>
-            <input type="submit" value="send" class="btn btn-success">
+            <input type="submit" value="send" class="btn btn-success" onclick="{{sent}}">
         </center>
+            <h4 align="center" class="alert alert-secondary">{{sent}}</h4>
         </form>
         {% endif %}
              </div>
